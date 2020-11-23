@@ -15,8 +15,10 @@
     <form id="ajax-demo" method="POST"
          enctype="multipart/form-data">
         <label for="left">My favorite number:</label>
-        <input class="operand"
+        <input class="operand"  name="it_can_have_a_name"
                id="left" type="number" placeholder="999">
+        <label for="the_rant">Rant:</label>
+        <input class="rant" type="text" id="the_rant" />
     </form>
 
     <div id="sum_goes_here"></div>
@@ -31,7 +33,8 @@
         $(document).ready(function() {
             // This function runs when the document has been
             // fully loaded and is "ready".
-            $(".operand").change(opchanged)
+            $(".operand").change(opchanged);
+            $(".rant").change(rant_changed);
         });
         // Now the 'opchanged' function is "listening" to
         // change events on elements with class "operand".
@@ -62,6 +65,32 @@
                 "<p>Tripled: " + tripled + "</p>"
             );
         }
+
+        // A separate listener for changed text
+        function rant_changed(event) {
+            console.log("Got change event to text");
+            // Get the data we need from the HTML form
+            let targ = event.target; // Which element was it?
+            let val = targ.value;    // What was in it?
+            console.log("Value: " + val);
+            // Ask flask to process it ...
+            // this is the actual 'ajax' part.
+            $.getJSON("/_ajax_rant_url", { value: val }, rant_response);
+        }
+
+        // What should we do when we get a response from flask?
+        function rant_response( response ) {
+            // The result will be a Javascript object
+            // { result: { ... } }
+            let rant_len = response.result.rant_len;
+            // Now we can modify the page by replacing
+            // some HTML code
+            $("#sum_goes_here").html(
+                "<p>Your rant was  " + rant_len +
+                " characters long.  Try to be more concise. </p>"
+            );
+        }
+
     </script>
 
 

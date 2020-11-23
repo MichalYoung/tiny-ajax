@@ -44,6 +44,12 @@ def ajax_url_handler():
     rslt = {"doubled": doubled, "tripled": tripled}
     return flask.jsonify(result=rslt)
 
+@app.route("/_ajax_rant_url")
+def ajax_rant_handler():
+    sent_value = flask.request.args.get("value", type=str)
+    rslt = {"rant_len": len(sent_value)}
+    return flask.jsonify(result=rslt)
+
 ###################
 #   Error handlers
 #   These are pages we display when something goes wrong
